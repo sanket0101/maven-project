@@ -30,19 +30,22 @@ pipeline
         {
             steps {
                 withMaven(globalMavenSettingsConfig: '', jdk: 'JAVA_HOME', maven: 'MVN_HOME', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn package'
+                   withSonarQubeEnv(credentialsId: 'sonar-tocken', installationName: 'sonar') {
+    sh 'mvn package sonar:sonar'
+}
+                   
                 }
             }
         }
         // CD part
-        stage ('deploy the code on tomcat')
+       /* stage ('deploy the code on tomcat')
         {
             steps {
                 sshagent(['CDKEY']) {
                     sh 'scp -o StrictHostKeyChecking=no webapp/target/webapp.war ec2-user@65.0.135.20:/usr/share/tomcat/webapps'
                 }
             }
-        }
+        }*/
     }
 }
 
